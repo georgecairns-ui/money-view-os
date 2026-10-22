@@ -1,0 +1,46 @@
+{
+  "id": "money",
+  "name": "Money View OS",
+  "version": "1.0.0",
+  "sharedVersion": "7",
+  "attachingVersion": "1",
+  "app": "apps/money/",
+  "dataFiles": [
+    "apps/money/data/money.json"
+  ],
+  "skills": [
+    "update-my-money-view",
+    "raise-an-invoice",
+    "put-invoices-in-my-accounts",
+    "who-owes-me-money",
+    "whats-coming-in",
+    "can-i-afford-this",
+    "set-aside-for-tax",
+    "sort-money-brain-dump"
+  ],
+  "setupSteps": [
+    "setup/money-01-your-accounts.md",
+    "setup/money-02-your-bank.md",
+    "setup/money-03-money-out.md",
+    "setup/money-04-first-view.md"
+  ],
+  "contextFiles": [
+    "context/money.md"
+  ],
+  "connections": [
+    "xero",
+    "quickbooks"
+  ],
+  "claudeSection": "apps/money/ATTACH-CLAUDE.md",
+  "reads": [
+    "pipeline",
+    "proposals",
+    "ads"
+  ],
+  "sends": [
+    {
+      "to": "task-list",
+      "what": "a chase task for each overdue invoice, \"Send INV-0043 from Xero\" for invoices sitting as drafts in your accounts app, and \"Move £640 to your Tax pot\" when your tax pot is short, each waiting for your click"
+    }
+  ]
+}

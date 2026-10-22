@@ -1,0 +1,12 @@
+{
+  "tools": [
+    {
+      "id": "money",
+      "name": "Money View OS",
+      "app": "apps/money/",
+      "dataFiles": [
+        "apps/money/data/money.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(./**)",
+      "Edit(./apps/money/data/**)",
+      "Write(./apps/money/data/**)",
+      "Edit(./apps/home/data/**)",
+      "Write(./apps/home/data/**)",
+      "Edit(./context/**)",
+      "Write(./context/**)",
+      "Edit(./files/**)",
+      "Write(./files/**)",
+      "Edit(./setup/progress.md)",
+      "Bash(bash setup/scripts/start-money-view.sh)",
+      "Bash(powershell -ExecutionPolicy Bypass -File setup\\scripts\\start-money-view.ps1)"
+    ]
+  }
+}
