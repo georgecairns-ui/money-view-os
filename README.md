@@ -6,7 +6,7 @@ Most business owners know roughly what's in the bank and have no idea what it wi
 
 **Claude never moves money, and never sends an invoice.** The app suggests: "Move £640 to your Tax pot", with a button that opens your bank. You make the move, then tell the app you've done it. Invoices go into your accounts software as drafts for you to check and send, or Money View opens your accounts software's new invoice page. Money View OS never sends, pays, approves or deletes anything, and never asks for a bank login, a sort code, an account number or a card number.
 
-Money View OS is one of 8 free tools from Get AI Powers, and it works fully on its own. The app's menu shows the others, and Get AI Powers sets them up with you on a free call.
+Money View OS is one of 7 free tools from Get AI Powers, and it works fully on its own. The app's menu shows the others, and Get AI Powers sets them up with you on a free call.
 
 Estimates to help you plan, not financial advice. Check big decisions with your accountant.
 
