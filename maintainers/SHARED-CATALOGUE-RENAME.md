@@ -8,6 +8,6 @@ The catalogue entry for `money` in `apps/shared/catalogue.json` has a new descri
 
 **The previous text** (from the shared catalogue, written before the tool was specified): "Cash today and the next 12 weeks, with what's owed to you. It reads your accounts so you can see a tight week coming and chase the right invoices in time."
 
-Task List OS, Pipeline OS and every other tool's own copy of `apps/shared/catalogue.json` still carry the previous text. The change is a shared-file change: it must be made in Task List OS first, then copied to every tool, the same as any other change to `catalogue.json`. Until then, this kit's copy differs from the others in this one entry only, and nothing else in the file has been touched. File Finder OS is still listed in every `main`; its removal arrives by pull request later.
+Every tool's own copy of `apps/shared/catalogue.json` now carries the new text: the menu pull requests merged on 23 October 2026, so all 7 tools' menus are identical again (8 tools, no File Finder OS).
 
-`ATTACHING.md`'s toolkit table has the old row for this tool. Suggested wording for its "What it does" cell: "Your money month by month: what's invoiced, paid and due, and a forecast of the next 12 weeks. Raise invoices into your accounts app, and see what to put aside for tax. It never moves money." Make the change in Task List OS first, then copy it to every tool, per the shared-file rule.
+`ATTACHING.md`'s toolkit table has the new row too, in its shorter form, since ATTACHING.md version 3 (23 October 2026): "Your money month by month from your accounts app, with a 12-week forecast and the tax to put aside".
