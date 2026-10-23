@@ -8,6 +8,6 @@ The catalogue entry for `money` in `apps/shared/catalogue.json` has a new descri
 
 **The previous text** (from the shared catalogue, written before the tool was specified): "Cash today and the next 12 weeks, with what's owed to you. It reads your accounts so you can see a tight week coming and chase the right invoices in time."
 
-Every tool's own copy of `apps/shared/catalogue.json` now carries the new text: the menu pull requests merged on 23 October 2026, so all 7 tools' menus are identical again (8 tools, no File Finder OS).
+Every tool's own copy of `apps/shared/catalogue.json` now carries the new text: the menu pull requests merged on 23 October 2026, so all 7 tools' menus are identical again (now 7 tools: no File Finder OS, and What's New in Claude OS removed on 23 October 2026).
 
 `ATTACHING.md`'s toolkit table has the new row too, in its shorter form, since ATTACHING.md version 3 (23 October 2026): "Your money month by month from your accounts app, with a 12-week forecast and the tax to put aside".

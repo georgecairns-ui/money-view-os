@@ -89,7 +89,7 @@ Search the whole kit (`apps/money/`, `.claude/skills/`, `setup/`, `docs/`, `.cla
 
 ## 7. Menu and locked-tool panel
 
-As `SHARED-V3-CHANGES.md` section 5 describes: on a scratch copy, the sidebar shows Home, Money View OS as an open dropdown with its one page (Money view, carrying the overdue count), and the other 8 tools locked under "More tools" in catalogue order. Folding the dropdown shows the total waiting and the choice is remembered. Each locked tool opens the panel with the right tracking on its button link; Escape and a click outside close it; it works by keyboard and at phone width. `showMoreTools: false` in `catalogue.json` hides the locked tools completely. The `money` entry's description reads as in `SHARED-CATALOGUE-RENAME.md`.
+As `SHARED-V3-CHANGES.md` section 5 describes: on a scratch copy, the sidebar shows Home, Money View OS as an open dropdown with its one page (Money view, carrying the overdue count), and the other 6 tools locked under "More tools" in catalogue order. Folding the dropdown shows the total waiting and the choice is remembered. Each locked tool opens the panel with the right tracking on its button link; Escape and a click outside close it; it works by keyboard and at phone width. `showMoreTools: false` in `catalogue.json` hides the locked tools completely. The `money` entry's description reads as in `SHARED-CATALOGUE-RENAME.md`.
 
 ## 8. Setup, as the customer's Claude
 
