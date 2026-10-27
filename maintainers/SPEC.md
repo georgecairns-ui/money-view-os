@@ -221,7 +221,7 @@ Each prompt ends "Move no money. Send nothing. Change nothing else." and keeps t
 
 ## Skills (`.claude/skills/`), triggered by what people say
 
-Shared (copied from the template): `connect-a-tool`, `human-email`, `keep-context-fresh`, `match-my-brand`, `polite-chaser`, `setup`, `sort-brain-dump`, `write-like-me`. **Changed 21 October 2026 (late, George): `file-it` is removed, `open-task-list` is renamed `open-money-view`, and `keep-context-fresh` and `match-my-brand` are trimmed to Money View. See `MAINTAINING.md`, "Money View OS stands alone".** Remove the content tool's own skills.
+Shared (copied from the template): `connect-a-tool`, `human-email`, `keep-context-fresh`, `match-my-brand`, `polite-chaser`, `setup`, `sort-brain-dump`, `write-like-me`. **Changed 21 October 2026 (late, George): `file-it` is removed, `open-task-list` is renamed `open-money-view`, and `keep-context-fresh` and `match-my-brand` are trimmed to Money View. See `MAINTAINING.md`, "Money View OS stands alone".** Remove the content tool's own skills. **Shared version 11 (27 October 2026): `open-money-view` is further renamed `open-the-app` and `start-money-view.sh`/`.ps1` become the shared `start-app.sh`/`.ps1`, the same in every tool; `get-updates` is added, also shared.**
 
 | skill | people say | does |
 |---|---|---|

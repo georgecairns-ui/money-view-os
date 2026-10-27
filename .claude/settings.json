@@ -11,8 +11,8 @@
       "Edit(./files/**)",
       "Write(./files/**)",
       "Edit(./setup/progress.md)",
-      "Bash(bash setup/scripts/start-money-view.sh)",
-      "Bash(powershell -ExecutionPolicy Bypass -File setup\\scripts\\start-money-view.ps1)"
+      "Bash(bash setup/scripts/start-app.sh)",
+      "Bash(powershell -ExecutionPolicy Bypass -File setup\\scripts\\start-app.ps1)"
     ]
   }
 }

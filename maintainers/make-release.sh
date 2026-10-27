@@ -131,7 +131,7 @@ for f in sorted((root / "setup/connections").glob("*")):
         problems.append(f"setup/connections/{f.name} is not one of Money View's connection guides")
 # Only the skills Money View uses
 KEEP_SKILLS = {"update-my-money-view", "raise-an-invoice", "put-invoices-in-my-accounts", "who-owes-me-money", "whats-coming-in",
-               "can-i-afford-this", "set-aside-for-tax", "sort-money-brain-dump", "open-money-view", "setup", "match-my-brand",
+               "can-i-afford-this", "set-aside-for-tax", "sort-money-brain-dump", "open-the-app", "get-updates", "setup", "match-my-brand",
                "sort-brain-dump", "polite-chaser", "human-email", "write-like-me", "keep-context-fresh", "connect-a-tool"}
 for d in sorted((root / ".claude/skills").iterdir()):
     if d.is_dir() and d.name not in KEEP_SKILLS:
@@ -162,6 +162,29 @@ if any(re.search(r"\b(curl|wget|ssh|scp|rm|sendmail)\b", p) for p in perms):
     problems.append(".claude/settings.json pre-approves a command that sends or deletes")
 if "Setup: not done yet" not in (root / "CLAUDE.md").read_text():
     problems.append("CLAUDE.md says setup is done")
+
+# A customer's saved downloads never ship: setup/as-installed/ holds only its README
+for f in sorted((root / "setup/as-installed").rglob("*")):
+    if f.is_file() and f.name not in ("README.md", ".DS_Store"):
+        problems.append(f"{f.relative_to(root)} is a customer's saved download and must not ship")
+
+# The shared version in toolkit.json must be the one in apps/shared/VERSION
+shared_version = (root / "apps/shared/VERSION").read_text().split()[0]
+if str(json.loads((root / "toolkit.json").read_text()).get("sharedVersion")) != shared_version:
+    problems.append(f"toolkit.json sharedVersion is {json.loads((root / 'toolkit.json').read_text()).get('sharedVersion')!r} but apps/shared/VERSION says {shared_version}: change them together")
+
+# Shared parts are identical in every tool, so they must not name this one, and no file may use the old
+# start-up names (they are now open-the-app / start-app, the same in every tool)
+for f in sorted(root.rglob("*")):
+    if not f.is_file() or {".git", "dist", "maintainers", "node_modules"} & set(f.relative_to(root).parts) or f.suffix in (".png", ".jpg", ".woff2", ".zip", ".gz", ".ico"):
+        continue
+    txt = f.read_text(errors="ignore")
+    rel = str(f.relative_to(root))
+    for old in ("open-task-list", "start-task-list"):
+        if old in txt:
+            problems.append(f"{rel} uses the old name {old} (it is now open-the-app / start-app, the same in every tool)")
+    if re.match(r"setup/scripts/|apps/server/|apps/shared/js/", rel) and re.search(r"Money View OS", txt):
+        problems.append(f"{rel} names this tool (Money View OS): shared parts read the name from toolkit.json")
 for p in problems:
     print("  - " + p, file=sys.stderr)
 sys.exit(1 if problems else 0)
@@ -170,6 +193,7 @@ PYEOF
 # ---------- 2. Copy, leaving out what customers don't need ----------
 mkdir -p "$OUT" "$DIST"
 rsync -a \
+  --include 'setup/as-installed/README.md' --exclude 'setup/as-installed/*' \
   --exclude '.git' --exclude '.gitignore' --exclude 'dist' --exclude 'maintainers' \
   --exclude '.claude/launch.json' --exclude '.claude/settings.local.json' --exclude '.claude/.cc-writes' \
   --exclude '*.backup.json' --exclude '*.tmp-*' --exclude 'apps/home/data' --exclude '.DS_Store' --exclude '._*' --exclude 'Thumbs.db' --exclude 'desktop.ini' \
@@ -179,7 +203,7 @@ rsync -a \
 find "$OUT" -mindepth 2 -type d -name .claude -empty -prune -exec rm -rf {} +
 
 # ---------- 3. Checks ----------
-for f in "START-HERE.md" "CLAUDE.md" "LICENSE" "README.md" "Open Money View.html" "apps/money/index.html" "apps/money/data/money.json" "apps/money/menu.json" "apps/money/home-boxes.js" "apps/money/claude-jobs.json" "apps/money/CLAUDE.md" "apps/money/ATTACH-CLAUDE.md" "apps/money/app/app.js" "apps/money/app/app.css" "apps/money/app/model.js" "apps/money/app/components.js" "apps/money/app/chart.js" "apps/money/app/drawer.js" "apps/money/app/settings.js" "apps/money/app/view-overview.js" "apps/money/app/view-months.js" "apps/money/app/view-invoices.js" "apps/money/app/view-inout.js" "apps/money/app/view-whatif.js"  "context/money.md" "setup/progress.md" "setup/05-get-to-know-the-business.md" "setup/money-01-your-accounts.md" "setup/money-02-your-bank.md" "setup/money-03-money-out.md" "setup/money-04-first-view.md" "setup/09-check-and-hand-over.md" "setup/connections/README.md" "setup/connections/xero.md" "setup/connections/xero-drafts.md" "setup/connections/quickbooks.md" "setup/connections/freeagent.md" "setup/connections/sage.md" "setup/connections/bank-feeds.md" "skills-to-upload/README.md" ".claude/skills/README.md" ".claude/settings.json" "setup/scripts/save-key.sh" "setup/scripts/save-key.ps1" "setup/scripts/start-money-view.sh" "setup/scripts/start-money-view.ps1" "setup/scripts/autostart-mac.sh" "setup/scripts/autostart-windows.ps1" ".claude/skills/open-money-view/SKILL.md" "context/business.md" "context/people.md" "context/voice.md" "context/tools.md" "context/README.md" "files/README.md" "files/05-finance/README.md" "files/99-archive/README.md" "apps/server/server.js" "apps/server/server.py" "toolkit.json" "ATTACHING.md" "apps/installed.json" "apps/shared/catalogue.json" "apps/shared/VERSION" "apps/shared/sidebar.css" "apps/shared/js/sidebar.js" "apps/shared/js/theme.js" "apps/shared/js/braindump.js" ".claude/skills/sort-brain-dump/SKILL.md" "apps/shared/images/claude-icon.png" "apps/home/index.html" "apps/home/home.js" "apps/home/home.css" "apps/shared/fonts/Figtree-Variable.woff2" "docs/PRIVACY-AND-SAFETY.md"; do
+for f in "START-HERE.md" "CLAUDE.md" "LICENSE" "README.md" "Open Money View.html" "apps/money/index.html" "apps/money/data/money.json" "apps/money/menu.json" "apps/money/home-boxes.js" "apps/money/claude-jobs.json" "apps/money/CLAUDE.md" "apps/money/ATTACH-CLAUDE.md" "apps/money/app/app.js" "apps/money/app/app.css" "apps/money/app/model.js" "apps/money/app/components.js" "apps/money/app/chart.js" "apps/money/app/drawer.js" "apps/money/app/settings.js" "apps/money/app/view-overview.js" "apps/money/app/view-months.js" "apps/money/app/view-invoices.js" "apps/money/app/view-inout.js" "apps/money/app/view-whatif.js"  "context/money.md" "setup/progress.md" "setup/05-get-to-know-the-business.md" "setup/money-01-your-accounts.md" "setup/money-02-your-bank.md" "setup/money-03-money-out.md" "setup/money-04-first-view.md" "setup/09-check-and-hand-over.md" "setup/connections/README.md" "setup/connections/xero.md" "setup/connections/xero-drafts.md" "setup/connections/quickbooks.md" "setup/connections/freeagent.md" "setup/connections/sage.md" "setup/connections/bank-feeds.md" "skills-to-upload/README.md" ".claude/skills/README.md" ".claude/settings.json" "setup/scripts/save-key.sh" "setup/scripts/save-key.ps1" "setup/scripts/start-app.sh" "setup/scripts/start-app.ps1" "setup/scripts/autostart-mac.sh" "setup/scripts/autostart-windows.ps1" ".claude/skills/open-the-app/SKILL.md" ".claude/skills/get-updates/SKILL.md" "setup/as-installed/README.md" "context/business.md" "context/people.md" "context/voice.md" "context/tools.md" "context/README.md" "files/README.md" "files/05-finance/README.md" "files/99-archive/README.md" "apps/server/server.js" "apps/server/server.py" "toolkit.json" "ATTACHING.md" "apps/installed.json" "apps/shared/catalogue.json" "apps/shared/VERSION" "apps/shared/sidebar.css" "apps/shared/js/sidebar.js" "apps/shared/js/theme.js" "apps/shared/js/braindump.js" ".claude/skills/sort-brain-dump/SKILL.md" "apps/shared/images/claude-icon.png" "apps/home/index.html" "apps/home/home.js" "apps/home/home.css" "apps/shared/fonts/Figtree-Variable.woff2" "docs/PRIVACY-AND-SAFETY.md"; do
   [ -e "$OUT/$f" ] || fail "missing $f"
 done
 for f in apps/money/data/money.json apps/money/menu.json apps/money/claude-jobs.json toolkit.json apps/installed.json apps/shared/catalogue.json .claude/settings.json; do
@@ -263,8 +287,8 @@ BANNED='leverage|synergy|game-changer|seamless|cutting-edge|streamline|empower|u
 # claude-jobs.json (its labels and prompts), the skills this tool owns, the setup steps, the guides, the notes and every top-level
 # document. (apps/shared, apps/home, apps/server and the shared connection guides are copied from the other tools.)
 BANNED_PATHS=("$OUT/README.md" "$OUT/START-HERE.md" "$OUT/CLAUDE.md" "$OUT/toolkit.json" "$OUT/docs" "$OUT/context" "$OUT"/setup/*.md "$OUT/setup/connections/xero.md" "$OUT/setup/connections/xero-drafts.md" "$OUT/setup/connections/quickbooks.md" "$OUT/setup/connections/freeagent.md" "$OUT/setup/connections/sage.md" "$OUT/setup/connections/bank-feeds.md" "$OUT/apps/money" "$OUT/.claude/skills/README.md" "$OUT/skills-to-upload" "$OUT/files")
-# The skills this tool owns. (The shared skills, such as human-email, list banned words on purpose, as examples to avoid.)
-for skill in update-my-money-view raise-an-invoice put-invoices-in-my-accounts who-owes-me-money whats-coming-in can-i-afford-this set-aside-for-tax sort-money-brain-dump open-money-view; do
+# The skills this tool owns. (The shared skills, such as human-email and open-the-app, list banned words on purpose, as examples to avoid.)
+for skill in update-my-money-view raise-an-invoice put-invoices-in-my-accounts who-owes-me-money whats-coming-in can-i-afford-this set-aside-for-tax sort-money-brain-dump; do
   BANNED_PATHS+=("$OUT/.claude/skills/$skill")
 done
 for path in "${BANNED_PATHS[@]}"; do
@@ -279,7 +303,7 @@ HITS=$(found -rIEn '\b[0-9]{2}-[0-9]{2}-[0-9]{2}\b|\b[0-9]{4} ?[0-9]{4} ?[0-9]{4
 # apps/home and apps/server are shared and may name other tools.) Every path is checked to exist first.
 OLD='content machine|content-machine|content os|megaphone|what-works|apps/content|research-my-market|skill-map|skill map|skillmap|skill and folder map|skill-and-folder|Pipeline OS Licence'
 OLD_PATHS=("$OUT/README.md" "$OUT/START-HERE.md" "$OUT/CLAUDE.md" "$OUT/LICENSE" "$OUT/toolkit.json" "$OUT/Open Money View.html" "$OUT/docs" "$OUT"/setup/*.md "$OUT/setup/connections/sage.md" "$OUT/setup/connections/freeagent.md" "$OUT/setup/connections/xero.md" "$OUT/setup/connections/quickbooks.md" "$OUT/setup/connections/xero-drafts.md" "$OUT/setup/connections/bank-feeds.md" "$OUT/skills-to-upload" "$OUT/context" "$OUT/apps/money" "$OUT/apps/installed.json" "$OUT/.claude/settings.json" "$OUT/.claude/skills/README.md")
-for skill in setup open-money-view update-my-money-view raise-an-invoice put-invoices-in-my-accounts who-owes-me-money whats-coming-in can-i-afford-this set-aside-for-tax sort-money-brain-dump; do
+for skill in setup update-my-money-view raise-an-invoice put-invoices-in-my-accounts who-owes-me-money whats-coming-in can-i-afford-this set-aside-for-tax sort-money-brain-dump; do
   OLD_PATHS+=("$OUT/.claude/skills/$skill")
 done
 for path in "${OLD_PATHS[@]}"; do
@@ -289,9 +313,11 @@ HITS=$(found -rEiIl "$OLD" "${OLD_PATHS[@]}")
 [ -z "$HITS" ] || fail "an old tool name is still in a file this tool owns: $(printf '%s\n' "$HITS" | head -3)"
 # Task List OS's own start script, skill and helper names must not linger in what this tool owns either. (The attach rules
 # in apps/money/CLAUDE.md, ATTACH-CLAUDE.md and the skills that hand work to Task List OS may name "Task List OS" itself, so
-# only its script, skill and helper names are checked here. The shared helper's TLOS_ settings stay, as they are shared.)
-TASK_OLD='start-task-list|open-task-list|task-list-os|task list helper|file-it|your task list'
-TASK_PATHS=("$OUT/README.md" "$OUT/START-HERE.md" "$OUT/CLAUDE.md" "$OUT/toolkit.json" "$OUT/Open Money View.html" "$OUT/docs" "$OUT/setup" "$OUT/context" "$OUT/files" "$OUT/skills-to-upload" "$OUT/apps/money" "$OUT/.claude")
+# only its script, skill and helper names are checked here. The shared helper's TLOS_ settings stay, as they are shared.
+# setup/scripts/ is shared version 11's own, and save-key.sh keeps the Mac Keychain service and the Linux config folder
+# named task-list-os on purpose in every tool, so a key saved before the rename is still found: left out of this check.)
+TASK_OLD='start-task-list|open-task-list|task list helper|file-it|your task list'
+TASK_PATHS=("$OUT/README.md" "$OUT/START-HERE.md" "$OUT/CLAUDE.md" "$OUT/toolkit.json" "$OUT/Open Money View.html" "$OUT/docs" "$OUT"/setup/*.md "$OUT/setup/connections" "$OUT/setup/as-installed" "$OUT/context" "$OUT/files" "$OUT/skills-to-upload" "$OUT/apps/money" "$OUT/.claude")
 for path in "${TASK_PATHS[@]}"; do
   [ -e "$path" ] || fail "the task-list-name check expects $path and it isn't there"
 done

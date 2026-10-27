@@ -48,7 +48,7 @@ If `context/money.md` still says "Status: not filled in yet", you can't build a 
 
 | Folder | What's in it |
 |---|---|
-| **http://localhost:4747** | The app. It opens on Home (a dashboard of boxes they arrange themselves), then Money View: one page with views to flick between at the top (Overview, Months, Invoices, In and out, What if), a Refresh numbers button, New invoice and a Settings gear. The **Brain dump** button at the top (shared by every tool, and on Home) records a voice note or a typed one. A small helper in `apps/server/` runs it on this computer. If it isn't running, use `.claude/skills/open-money-view` |
+| **http://localhost:4747** | The app. It opens on Home (a dashboard of boxes they arrange themselves), then Money View: one page with views to flick between at the top (Overview, Months, Invoices, In and out, What if), a Refresh numbers button, New invoice and a Settings gear. The **Brain dump** button at the top (shared by every tool, and on Home) records a voice note or a typed one. A small helper in `apps/server/` runs it on this computer. If it isn't running, use `.claude/skills/open-the-app` |
 | `Open Money View.html` | Double-clicking it goes to the link above when the app is running |
 | `apps/money/` | The money app. Its data is `apps/money/data/money.json`; `apps/money/CLAUDE.md` explains the format and the rules |
 | `apps/shared/` | The app's look: `theme.css` holds every colour and font. Also the toolkit menu: `catalogue.json` lists all 7 tools and the booking link |
@@ -74,7 +74,8 @@ When a request matches a skill in `.claude/skills/`, read that skill's `SKILL.md
 | "What's coming in?", "how's cash looking?", "money check-in" | `.claude/skills/whats-coming-in` |
 | "Can I afford a van?", "what if I hire someone?", "what if I lose Greenway?" (and the Ask Claude box in What if) | `.claude/skills/can-i-afford-this` |
 | "How much should I put aside?", "tax pot", "I've moved it" | `.claude/skills/set-aside-for-tax` |
-| "Open my money view", "it's not loading" | `.claude/skills/open-money-view` |
+| "Open my money view", "open the app", "it's not loading" | `.claude/skills/open-the-app` |
+| "Get the latest version", "any updates?", "update the app" | `.claude/skills/get-updates` |
 | "Sort my brain dump", a messy note (and every note from the Brain dump button) | `.claude/skills/sort-brain-dump` (shared by every tool), which hands money to `.claude/skills/sort-money-brain-dump` |
 | "Make this sound less robotic", any text you write | `.claude/skills/human-email` |
 | "Write it like me", "learn how I write" | `.claude/skills/write-like-me` |
