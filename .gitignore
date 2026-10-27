@@ -1,9 +1,10 @@
 # Built zips
 dist/
 
-# Safety copies the app makes before every save
+# Safety copies the app makes before every save, and the half-written file a save is in the middle of
 *.backup.json
 apps/money/data/*.tmp-*
+*.saving
 
 # Exports from an accounts app stay on the person's computer, never in the kit
 *.csv
@@ -23,3 +24,7 @@ desktop.ini
 apps/home/data/
 __pycache__/
 *.pyc
+
+# The saved download of each tool as a customer installed it: theirs, not the kit's
+setup/as-installed/*
+!setup/as-installed/README.md

@@ -29,6 +29,7 @@ Say those figures only as the app shows them. Then tell them, briefly:
 - **What to say next**: "update my money view", "what's coming in?", "who owes me money?", "invoice Greenway Café for the menu", "can I afford a van?", "how much should I put aside?", and "update my money view" for fresh numbers.
 - Their link, **http://localhost:4747/money/**. Bookmark it.
 - That Claude can read their accounts and update the money view without asking every time, but it can't send, pay, move or delete anything. Estimates to help them plan, not financial advice: check big decisions with their accountant.
+- That they can say "get the latest version" any time and you will bring the app up to date, keeping everything of theirs.
 
 ## 3. A regular refresh (optional)
 
