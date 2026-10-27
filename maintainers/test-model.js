@@ -580,4 +580,47 @@ check("the shipped data file is the empty file", function () {
   assert.strictEqual(M.forecast(M.normalise(shipped), TODAY, 12).length, 12);
 });
 
+// Review probes (27 Oct 2026)
+// Received 5,000 at 20% = 1,000 to set aside. A 2,000 payment on account went out on 31 July, but the pot's real balance
+// is 0, so the pot is 1,000 short: tax paid is not taken off again when the pot balance is known.
+function probeData() {
+  return M.normalise({
+    settings: { vat: { registered: false }, tax: { setAsidePercent: 20, potAccountId: "a-pot" }, yearStart: "04-06" },
+    accounts: [{ id: "a-pot", name: "Tax pot", balance: 0, isTaxPot: true }],
+    invoices: [{ id: "i-p", number: "INV-1", customer: "Probe", issueDate: "2026-06-01", dueDate: "2026-07-01", status: "sent", lines: [line("Work", 1, 5000, 0)], payments: [{ id: "y-p", date: "2026-07-10", amount: 5000, source: "accounts" }] }],
+    transactions: [{ id: "t-p", date: "2026-07-31", text: "Self assessment", amount: 2000, dir: "out", category: "tax" }]
+  });
+}
+check("taxPot probe: a known pot balance is not reduced by tax already paid", function () {
+  const t = M.taxPot(probeData(), TODAY);
+  assert.strictEqual(t.shouldHave, 1000); assert.strictEqual(t.toMove, 1000); assert.strictEqual(t.taxPaid, 2000);
+});
+check("taxPot probe: with no pot balance the tax paid still comes off", function () {
+  const d = probeData(); d.settings.tax.potAccountId = null; d.accounts[0].isTaxPot = false;
+  const t = M.taxPot(d, TODAY);
+  assert.strictEqual(t.shouldHave, 0); assert.strictEqual(t.toMove, 0);
+});
+check("vatQuarter probe: a wage marked as including VAT reclaims none; a bill still does", function () {
+  const d = M.normalise({
+    settings: { vat: { registered: true, scheme: "standard", rate: 20, quarterEnds: [3, 6, 9, 12] } },
+    outgoings: ["staff", "loan", "tax", "bills"].map(function (c) { return { id: "o-" + c, name: c, amount: 1200, category: c, repeat: "none", date: "2026-10-25", vatIncluded: true, status: "confirmed" }; })
+  });
+  assert.strictEqual(M.vatQuarter(d, TODAY).inputVat, 200);   // only the bill: 1,200 x 20 / 120
+});
+check("vat word match probe: Private and Renovation are not VAT, HMRC VAT is", function () {
+  const d = probeData(); d.settings.tax.potAccountId = null; d.accounts[0].isTaxPot = false;
+  d.transactions = [{ id: "t1", date: "2026-08-01", text: "Private tuition", amount: 100, dir: "out", category: "tax" }, { id: "t2", date: "2026-08-02", text: "Renovation tax", amount: 50, dir: "out", category: "tax" }, { id: "t3", date: "2026-08-03", text: "HMRC VAT", amount: 999, dir: "out", category: "tax" }];
+  assert.strictEqual(M.taxPot(d, TODAY).taxPaid, 150);
+});
+check("months probe: a lose-a-customer what-if removes their due invoice", function () {
+  const d = M.normalise({
+    accounts: [{ id: "a1", name: "Current", balance: 0 }],
+    invoices: [{ id: "i-l", number: "INV-2", customer: "Marlow Dental", issueDate: "2026-10-01", dueDate: "2026-11-10", status: "sent", lines: [line("Work", 1, 500, 0)], payments: [] }],
+    scenarios: [{ id: "s-l", name: "Lose Marlow", on: true, changes: [{ id: "c1", kind: "lose", amount: 0, repeat: "none", from: "2026-11-01", customer: "marlow dental" }] }]
+  });
+  const nov = function (o) { return M.months(d, TODAY, 0, 2, o).filter(function (r) { return r.month === "2026-11"; })[0]; };
+  assert.strictEqual(nov().due, 500);
+  assert.strictEqual(nov({ scenarioIds: ["s-l"] }).due, 0);
+});
+
 console.log("All " + passed + " checks passed.");
