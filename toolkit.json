@@ -2,7 +2,7 @@
   "id": "money",
   "name": "Money View OS",
   "version": "1.0.0",
-  "sharedVersion": "11",
+  "sharedVersion": "12",
   "attachingVersion": "4",
   "app": "apps/money/",
   "dataFiles": [
