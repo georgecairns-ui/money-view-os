@@ -180,8 +180,31 @@ for f in sorted(root.rglob("*")):
         continue
     txt = f.read_text(errors="ignore")
     rel = str(f.relative_to(root))
-    if "archive/refs/heads" in txt or "raw.githubusercontent.com" in txt:
-        problems.append(f"{rel} uses an old public download address: since shared version 12 every download uses the person's GitHub sign-in (gh)")
+    if "raw.githubusercontent.com" in txt:
+        problems.append(f"{rel} uses raw.githubusercontent.com: read files from the downloaded copy instead")
+    # Shared version 13: setup never gives up on a connection, never asks what's on screen, and never uses keys or GitHub sign-in
+    v13_scope = rel == "START-HERE.md" or rel == "README.md" or rel.startswith("setup/") or rel.startswith(".claude/skills/connect-a-tool/") or rel.startswith(".claude/skills/get-updates/")
+    # The give-up checks apply only to the files that connect apps (elsewhere "move on" or "skip it" is harmless)
+    connect_scope = (re.fullmatch(r"setup/0[2-4][^/]*\.md", rel) or re.fullmatch(r"setup/[^/]*(connect|check-ins|make-it-automatic)[^/]*\.md", rel)
+                     or re.fullmatch(r"setup/connections/[^/]+\.md", rel) or rel.startswith(".claude/skills/connect-a-tool/")
+                     # Money View OS connects its accounts app and bank feed in its own steps, and offers the regular refresh in step 6
+                     or rel in ("setup/money-01-your-accounts.md", "setup/money-02-your-bank.md", "setup/09-check-and-hand-over.md"))
+    if v13_scope and f.suffix == ".md" and rel != "setup/connections/xero-drafts.md":
+        give_up = (
+            (r"and (move|carry) on\b(?! (from|setting up))", "lets Claude give up on a step"),
+            (r"\bthen move on\b", "lets Claude give up on a step"),
+            (r"\bskip it\b", "lets Claude give up on a step"),
+            (r"try once more", "lets Claude give up on a connection"),
+            (r"ask (the person |them )?what they (actually |can )?see", "asks the person what's on screen: Claude checks the connection status itself"),
+        ) if connect_scope else ()
+        for pattern, why in give_up + (
+            (r"Route 2: API key", "offers an API key route"),
+            (r"claude mcp add", "adds a server outside Claude's Connectors screen"),
+            (r"save-key", "asks for a key"),
+            (r"\bgh (auth|api|repo)\b", "needs a GitHub sign-in while the tools are public"),
+        ):
+            if re.search(pattern, txt, re.I):
+                problems.append(f"{rel} {why} (shared version 13): matched {pattern!r}")
     for old in ("open-task-list", "start-task-list"):
         if old in txt:
             problems.append(f"{rel} uses the old name {old} (it is now open-the-app / start-app, the same in every tool)")
@@ -205,7 +228,7 @@ rsync -a \
 find "$OUT" -mindepth 2 -type d -name .claude -empty -prune -exec rm -rf {} +
 
 # ---------- 3. Checks ----------
-for f in "START-HERE.md" "CLAUDE.md" "LICENSE" "README.md" "Open Money View.html" "apps/money/index.html" "apps/money/data/money.json" "apps/money/menu.json" "apps/money/home-boxes.js" "apps/money/claude-jobs.json" "apps/money/CLAUDE.md" "apps/money/ATTACH-CLAUDE.md" "apps/money/app/app.js" "apps/money/app/app.css" "apps/money/app/model.js" "apps/money/app/components.js" "apps/money/app/chart.js" "apps/money/app/drawer.js" "apps/money/app/settings.js" "apps/money/app/view-overview.js" "apps/money/app/view-months.js" "apps/money/app/view-invoices.js" "apps/money/app/view-inout.js" "apps/money/app/view-whatif.js"  "context/money.md" "setup/progress.md" "setup/05-get-to-know-the-business.md" "setup/money-01-your-accounts.md" "setup/money-02-your-bank.md" "setup/money-03-money-out.md" "setup/money-04-first-view.md" "setup/09-check-and-hand-over.md" "setup/connections/README.md" "setup/connections/xero.md" "setup/connections/xero-drafts.md" "setup/connections/quickbooks.md" "setup/connections/freeagent.md" "setup/connections/sage.md" "setup/connections/bank-feeds.md" "skills-to-upload/README.md" ".claude/skills/README.md" ".claude/settings.json" "setup/scripts/save-key.sh" "setup/scripts/save-key.ps1" "setup/scripts/start-app.sh" "setup/scripts/start-app.ps1" "setup/scripts/autostart-mac.sh" "setup/scripts/autostart-windows.ps1" ".claude/skills/open-the-app/SKILL.md" ".claude/skills/get-updates/SKILL.md" "setup/as-installed/README.md" "context/business.md" "context/people.md" "context/voice.md" "context/tools.md" "context/README.md" "files/README.md" "files/05-finance/README.md" "files/99-archive/README.md" "apps/server/server.js" "apps/server/server.py" "toolkit.json" "ATTACHING.md" "apps/installed.json" "apps/shared/catalogue.json" "apps/shared/VERSION" "apps/shared/sidebar.css" "apps/shared/js/sidebar.js" "apps/shared/js/theme.js" "apps/shared/js/braindump.js" ".claude/skills/sort-brain-dump/SKILL.md" "apps/shared/images/claude-icon.png" "apps/home/index.html" "apps/home/home.js" "apps/home/home.css" "apps/shared/fonts/Figtree-Variable.woff2" "docs/PRIVACY-AND-SAFETY.md"; do
+for f in "START-HERE.md" "CLAUDE.md" "LICENSE" "README.md" "Open Money View.html" "apps/money/index.html" "apps/money/data/money.json" "apps/money/menu.json" "apps/money/home-boxes.js" "apps/money/claude-jobs.json" "apps/money/CLAUDE.md" "apps/money/ATTACH-CLAUDE.md" "apps/money/app/app.js" "apps/money/app/app.css" "apps/money/app/model.js" "apps/money/app/components.js" "apps/money/app/chart.js" "apps/money/app/drawer.js" "apps/money/app/settings.js" "apps/money/app/view-overview.js" "apps/money/app/view-months.js" "apps/money/app/view-invoices.js" "apps/money/app/view-inout.js" "apps/money/app/view-whatif.js"  "context/money.md" "setup/progress.md" "setup/05-get-to-know-the-business.md" "setup/money-01-your-accounts.md" "setup/money-02-your-bank.md" "setup/money-03-money-out.md" "setup/money-04-first-view.md" "setup/09-check-and-hand-over.md" "setup/connections/README.md" "setup/connections/xero.md" "setup/connections/xero-drafts.md" "setup/connections/quickbooks.md" "setup/connections/freeagent.md" "setup/connections/sage.md" "setup/connections/bank-feeds.md" "skills-to-upload/README.md" ".claude/skills/README.md" ".claude/settings.json" "setup/scripts/save-key.sh" "setup/scripts/save-key.ps1" "setup/scripts/start-app.sh" "setup/scripts/start-app.ps1" "setup/scripts/autostart-mac.sh" "setup/scripts/autostart-windows.ps1" ".claude/skills/open-the-app/SKILL.md" ".claude/skills/get-updates/SKILL.md" "setup/as-installed/README.md" "context/business.md" "context/people.md" "context/voice.md" "context/tools.md" "context/README.md" "files/README.md" "files/05-finance/README.md" "files/99-archive/README.md" "apps/server/server.js" "apps/server/server.py" "toolkit.json" "ATTACHING.md" "apps/installed.json" "apps/shared/catalogue.json" "apps/shared/VERSION" "apps/shared/sidebar.css" "apps/shared/js/sidebar.js" "apps/shared/js/theme.js" "apps/shared/js/braindump.js" "apps/shared/js/connections.js" "apps/shared/js/connections-box.js" ".claude/skills/sort-brain-dump/SKILL.md" "apps/shared/images/claude-icon.png" "apps/home/index.html" "apps/home/home.js" "apps/home/home.css" "apps/shared/fonts/Figtree-Variable.woff2" "docs/PRIVACY-AND-SAFETY.md"; do
   [ -e "$OUT/$f" ] || fail "missing $f"
 done
 for f in apps/money/data/money.json apps/money/menu.json apps/money/claude-jobs.json toolkit.json apps/installed.json apps/shared/catalogue.json .claude/settings.json; do
