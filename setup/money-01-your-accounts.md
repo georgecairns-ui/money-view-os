@@ -11,6 +11,7 @@ Say these plainly, once, when they matter. Don't promise more.
 - **Xero:** the Xero connection in the Claude app **reads only**: invoices, bills, bank transactions, contacts, cash position and what customers owe. It can't create an invoice. Money View opens Xero's new invoice page for them to raise it there.
 - **QuickBooks:** Intuit's connector reads invoices, payments and bank transactions, and can also create invoices. Claude only ever creates one when the person presses the button, and never sends it.
 - Whatever the app, Claude never sends, approves or deletes an invoice, and never moves money. Money View builds the money view only through a live connection, never from exports, spreadsheets or reports.
+- Where a connection guide says Claude may create, update or send something when asked, Money View's rule wins: Claude never sends, updates or deletes an invoice or estimate and never creates a payment link. It creates an invoice only as a draft, only after the person presses 'Put it in <app> as a draft'.
 
 ## 1. Which accounts software
 
@@ -33,7 +34,7 @@ Then look at the tools the connection offers and set `sources.accounts.mode`: `d
 
   > There's no Claude connector for [app], so I can't connect to it live. If you export a CSV or PDF from it and drop it in the files folder, I'll read it whenever you ask.
 
-  Record it as `export-only` (part 4). Then say, in one plain paragraph:
+  Record it as `export-only` (part 4). Here the shared guides' steps that ask for an export (and any 'Prove it' that reads one) do not apply: after the sentence and the record, don't ask for an export, don't read one to prove anything, and don't build anything from one. If they bring one anyway, read it in chat only when they ask, as a snapshot, and never write it into the money view. Then say, in one plain paragraph:
 
   > Money View itself needs a live connection to your accounts app to build your money view, so it can't work from your accounts app yet. It works with Xero today, and QuickBooks will work once Intuit's Claude connection reaches the UK. Once your accounts app is one of those, come back and type /setup and we'll pick up from here.
 
@@ -49,6 +50,8 @@ Then look at the tools the connection offers and set `sources.accounts.mode`: `d
 
 - `apps/home/data/connections.json` (format in `setup/connections/README.md`, "Recording a connection"): create it if it isn't there, as `{ "version": 1, "connections": {} }`. Add the accounts app's row with the key and wording its guide gives: `connected` with today's date in `checked` only after the read in part 2 worked; `export-only` (or `no-connector` if they don't want to export) for an app with no connector.
 - `context/tools.md`: the connection, as its guide says.
+
+For QuickBooks, in context/tools.md and the note, write the never-list as: 'Send, update or delete an invoice or estimate, create a payment link. Create an invoice only as a draft when they press Put it in QuickBooks as a draft.'
 
 ## 5. If it still won't connect
 
