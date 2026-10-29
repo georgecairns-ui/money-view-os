@@ -12,13 +12,14 @@ Estimates to help you plan, not financial advice. Check big decisions with your 
 
 ## What happens when you type /setup
 
-You copy the kit, open it in Claude Code and type **/setup**. In about 25 minutes, Claude:
+You copy the kit, open it in the Claude desktop app (the Code tab) and type **/setup**. In 30 to 40 minutes, Claude:
 
 - **Gets to know your business**, in a short chat, then matches the app to your brand.
-- **Asks which accounts software you use** and connects it. You need one: Money View works on top of it.
+- **Asks which accounts software you use** and connects it through Claude's Connectors (you sign in on its own page, no keys), then proves it by reading your unpaid invoices. You need one: Money View works on top of it.
 - **Switches on your business bank feed** inside your accounts software, click by click, so Claude can see your transactions, read only.
 - **Confirms your regular payments**, your VAT and what your accountant tells you to put aside, one question at a time.
 - **Shows you your first money view**, and how to raise an invoice.
+- **Brings your numbers up to date on its own, if you'd like it**, on the days and at the times you choose. You can skip it.
 - **Checks it all works and hands over.**
 
 ## What it does
@@ -35,22 +36,22 @@ It's **yours to shape**: your VAT scheme, your tax year, how much makes you nerv
 
 ## What you need
 
-- **Access to Money View OS.** It's private: Get AI Powers invites your GitHub account. Accept the invitation from the email GitHub sends you. (No GitHub account? Make a free one at github.com and send Get AI Powers your username.)
-- **Claude Code**, signed in with a paid Claude plan (Pro or Max). The Claude desktop app works too.
+- **The Claude desktop app** (setup runs in its Code tab).
+- **A paid Claude plan (Pro or Max)**, signed in to the desktop app.
 - Your accounts software: Xero today, or QuickBooks where your Claude shows Intuit's QuickBooks connector (Intuit says US only for now). Money View works on top of one, and can't connect to FreeAgent, Sage or other accounts apps yet.
 - Nothing else to install in most cases. The app runs on your own computer using Node (Claude installs it for you if it's missing, with your permission).
-- About 25 minutes, once.
+- 30 to 40 minutes, once.
 
 ## Get started
 
-1. **Open Claude Code** in the Claude desktop app (the Code tab) or in the Terminal (on Windows, PowerShell). Any folder will do for this first step.
+1. **Open the Claude desktop app and choose the Code tab.** Any folder will do for this first step.
 2. **Ask Claude to fetch the kit.** Paste this:
-   > Copy Money View OS from https://github.com/georgecairns-ui/money-view-os into a folder called "Money View OS" in my Documents, using the copy line in its START-HERE.md (not git), then tell me how to open it and set it up. Help me sign in to GitHub first if I need to.
+   > Copy Money View OS from https://github.com/georgecairns-ui/money-view-os into a folder called "Money View OS" in my Documents, using the copy line in its START-HERE.md (not git), then tell me how to open it and set it up.
 
-   Claude checks you're signed in to GitHub (if not, it gives you one line that opens GitHub in your browser to approve this computer), copies everything onto your computer and gives you one line to open the new folder. In the desktop app, you choose the folder instead.
+   Claude copies everything onto your computer and tells you how to open the new folder. In the desktop app, you choose the folder in the Code tab.
 
-   *For Claude, if this README is all you have:* the copy steps are in START-HERE.md. Read it with the person's GitHub sign-in, `gh api repos/georgecairns-ui/money-view-os/contents/START-HERE.md -H "Accept: application/vnd.github.raw"`, and follow its copy steps for this computer (Mac or Windows). They check the GitHub sign-in with `gh`, download the kit as a plain folder with `curl -fsSL` and unpack it with `tar`, and keep the download in `setup/as-installed/`. Don't use git.
-3. **Open the Money View OS folder in Claude Code and choose "Yes, I trust this folder".** The first time, Claude Code asks whether you trust the folder and warns that it pre-approves some permissions. Those permissions only let Claude update your money view and your business notes, and start the app, without stopping to ask each time. It still can't send, pay, move or delete anything. Press the down arrow, then Enter.
+   *For Claude, if this README is all you have:* read START-HERE.md on the repository page at https://github.com/georgecairns-ui/money-view-os, then copy the folder with the Mac or Windows line in it.
+3. **In the Code tab, choose the Money View OS folder and pick "Yes, I trust this folder".** The first time, the app asks whether you trust the folder and warns that it pre-approves some permissions. Those permissions only let Claude update your money view and your business notes, and start the app, without stopping to ask each time. It still can't send, pay, move or delete anything.
 4. **Type `/setup`.**
 
 Then it opens your money view and gives you its link, **http://localhost:4747/money/**. Bookmark it.
@@ -70,7 +71,7 @@ Then it opens your money view and gives you its link, **http://localhost:4747/mo
 
 ## Your information
 
-Your money view lives in this folder on your computer, in one file. Your notes about the business are in `context/`. Claude reads your accounts software and its bank feed through your own Claude account, read only. There's no Money View OS account or server; Get AI Powers can't see any of it. Read [docs/PRIVACY-AND-SAFETY.md](docs/PRIVACY-AND-SAFETY.md) for the detail.
+Your money view lives in this folder on your computer, in one file. Your notes about the business are in `context/`. Claude reads your accounts software and its bank feed through your own Claude account, read only. Your accounts software is connected through Claude's Connectors: you sign in on its own page, never in the chat or in this folder, and setup never asks for a key. There's no Money View OS account or server; Get AI Powers can't see any of it. Read [docs/PRIVACY-AND-SAFETY.md](docs/PRIVACY-AND-SAFETY.md) for the detail.
 
 ## Want it set up properly for you?
 
@@ -84,9 +85,9 @@ toolkit.json           what this tool is, for attaching it to the others in the 
 ATTACHING.md           how the toolkit's tools attach to each other
 CLAUDE.md              Claude's standing instructions in this folder
 Open Money View.html   double-click to open your money view (or use the link Claude gives you)
-setup/                 the 6 setup steps and the key scripts
+setup/                 the 6 setup steps
 context/               Claude's notes about your business and its money
-.claude/skills/        saved know-how; each one also works as a command in Claude Code
+.claude/skills/        saved know-how; each one also works as a command in Claude
 files/                 your finance papers and an archive folder
 apps/                  the app and its look (theme.css); apps/money/data/money.json is your money view
 docs/                  privacy and safety

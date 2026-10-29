@@ -4,6 +4,8 @@ Claude ticks each step when it's done and adds a short note, so setup can pick u
 
 Setup status: not started
 
+Guide mode: not asked yet
+
 - [ ] 1. Get to know the business (and make the app look like it)
 - [ ] 2. Your accounts software
 - [ ] 3. Your bank feed
@@ -13,4 +15,4 @@ Setup status: not started
 
 ## Notes for next time
 
-(Claude: anything you need to remember between sessions goes here. For example, "Waiting for their bank feed" or "Xero drafts connection skipped for now". Never write a bank detail, a sort code, an account number, a card number or a key here.)
+(Claude: anything you need to remember between sessions goes here. For example, "Waiting for their bank feed" or "Regular refresh: said no". Never write a bank detail, a sort code, an account number, a card number or a key here.)
